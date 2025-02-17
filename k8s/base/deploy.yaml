@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: serra-nextjs-api
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: serra-nextjs-api
+  template:
+    metadata:
+      labels:
+        app: serra-nextjs-api
+      annotations:
+        backstage.io/kubernetes-id: serra-nextjs-api
+    spec:
+      imagePullSecrets:
+        - name: regcred-ghcr-io-secret
+      containers:
+        - name: serra-nextjs-api
+          image: ghcr.io/xgeekshq/serra-nextjs-api
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 125m
+              memory: 250Mi
+            limits:
+              cpu: 250m
+              memory: 500Mi
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: DB_DRIVER
+              value: postgres
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: serra-nextjs-api-dev-db-claim-secret
+                  key: DB_HOST
+            - name: DB_USER
+              value: psqladmin # TODO: remove the prefix, from DB_USER at secret
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: serra-nextjs-api-dev-db-claim-secret
+                  key: DB_PASSWORD
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: serra-nextjs-api-dev-db-claim-secret
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: serra-nextjs-api-dev-db-claim-secret
+                  key: DB_NAME

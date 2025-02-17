@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app.xgeeks.org/team: idp_training
+  backstage.io/kubernetes-id: serra-nextjs-api
+
+namespace: idp-dev
+# namespace: serra-nextjs-api-idp_training-dev
+
+resources:
+  - ../../base
+  - ingress.yaml
+
+images:
+  # ATENTION name = image.name NOT name = spec.containers[0].name
+  - name: ghcr.io/xgeekshq/serra-nextjs-api
+    newTag: v0.1.0
+
+replicas:
+  - name: serra-nextjs-api # the deployment name
+    count: 1

@@ -1,0 +1,35 @@
+apiVersion: db.atlasgo.io/v1alpha1
+kind: AtlasMigration
+metadata:
+  name: serra-nextjs-api-dev-atlas-migration
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  # How Atlas can connect to database: url OR urlFrom
+  credentials:
+    scheme: postgres
+    hostFrom:
+      secretKeyRef:
+        key: DB_HOST
+        name: serra-nextjs-api-dev-db-claim-secret
+    user: psqladmin # because in the secret it has a ...@servername prefix
+    # userFrom:
+    #   secretKeyRef:
+    #     key: DB_USER
+    #     name: serra-nextjs-api-dev-db-claim-secret
+    passwordFrom:
+      secretKeyRef:
+        key: DB_PASSWORD
+        name: serra-nextjs-api-dev-db-claim-secret
+    database: serra-nextjs-api_db
+    port: 5432
+    parameters:
+      sslmode: require
+  # urlFrom:
+  #   secretKeyRef:
+  #     name: serra-nextjs-api-db-claim-secret
+  #     key: url # url: "postgres://user:pass@your.db.com:5432/?sslmode=disable"
+
+  dir:
+    configMapRef: # this configMaps keys must be the versioned sql filenames, PLUS atlas.sum file
+      name: "migrations-cm"
