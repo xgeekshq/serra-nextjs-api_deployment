@@ -9,14 +9,14 @@ namespace: idp-dev
 # namespace: serra-nextjs-api-idp_training-dev
 
 resources:
-  - ../../base
-  - ingress.yaml
+- ../../base
+- ingress.yaml
 
-images:
   # ATENTION name = image.name NOT name = spec.containers[0].name
-  - name: ghcr.io/xgeekshq/serra-nextjs-api
-    newTag: v0.1.0
+images:
+- name: ghcr.io/xgeekshq/serra-nextjs-api
+  newTag: ea3a7e3
 
 replicas:
-  - name: serra-nextjs-api # the deployment name
-    count: 1
+- count: 1
+  name: serra-nextjs-api
